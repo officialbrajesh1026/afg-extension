@@ -1,0 +1,56 @@
+/* Allgemeine Layout-Stile */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 280px;
+  height: 200px;
+  background-color: #364f75;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Popup-Container */
+#popup-container {
+  text-align: center;
+  width: 100%;
+}
+
+/* Header */
+header h1 {
+  font-size: 20px;
+  color: #ffffff;
+  margin: 0;
+}
+
+header h2 {
+  font-size: 14px;
+  color: #cccccc;
+  margin: 5px 0 20px 0;
+}
+
+/* Button */
+button#checkLink {
+  background-color: #f15b40;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button#checkLink:hover {
+  background-color: #d14f36;
+}
+
+/* Dankeschön-Nachricht */
+#thank-you-message {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #ffffff;
+}
+

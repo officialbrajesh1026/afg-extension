@@ -1,0 +1,141 @@
+diff -r -x node_modules -x package-lock.json -x links.db Downloads/Telegram Desktop/AFG Browser Extention ORIGINAL/background.js Developer/AFG Browser Extention/background.js
+0a1,17
+> chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
+>   console.log('Notification clicked:', notificationId, 'Button:', buttonIndex);
+>   if (globalRedirectLink) {
+>     console.log('Redirecting to:', globalRedirectLink);
+>     chrome.tabs.update({ url: globalRedirectLink });
+>     chrome.notifications.clear(notificationId);
+>   } else {
+>     console.log('No redirect link found');
+>   }
+> });
+> 
+> chrome.notifications.onShowSettings.addListener(() => {
+>   console.log('Notification settings shown');
+> });
+> 
+> let globalRedirectLink = null;
+> 
+3a21
+>     console.log("Current domain:", currentDomain);
+5d22
+<     // Anfrage an den Server
+7c24,27
+<       .then((response) => response.json())
+---
+>       .then((response) => {
+>         console.log("Response status:", response.status);
+>         return response.json();
+>       })
+8a29
+>         console.log("Response data:", data);
+10,17c31,33
+<           chrome.notifications.create({
+<             type: "basic",
+<             iconUrl: "icons/icon48.png",
+<             title: "Link gefunden!",
+<             message: `Es gibt einen neuen Link für ${currentDomain}. Klicken Sie hier, um neu zu laden.`,
+<             buttons: [{ title: "Neu laden" }],
+<             requireInteraction: true,
+<           });
+---
+>           console.log("Creating notification for domain:", currentDomain);
+>           globalRedirectLink = data.redirectLink;
+>           console.log("Stored redirect link:", globalRedirectLink);
+19,22c35,51
+<           // Listener für die Benachrichtigung
+<           chrome.notifications.onButtonClicked.addListener(() => {
+<             chrome.tabs.update({ url: data.redirectLink });
+<           });
+---
+>           chrome.notifications.create(
+>             'redirect-notification',
+>             {
+>               type: "basic",
+>               iconUrl: "icons/icon48.png",
+>               title: "Link gefunden!",
+>               message: `Es gibt einen neuen Link für ${currentDomain}. Klicken Sie hier, um neu zu laden.`,
+>               buttons: [{ title: "Neu laden" }],
+>               requireInteraction: true,
+>             },
+>             (notificationId) => {
+>               console.log('Notification created with ID:', notificationId);
+>               if (chrome.runtime.lastError) {
+>                 console.error('Notification error:', chrome.runtime.lastError);
+>               }
+>             }
+>           );
+32d60
+<   
+\ No newline at end of file
+Only in Developer/AFG Browser Extention/icons: icon128.png
+Only in Downloads/Telegram Desktop/AFG Browser Extention ORIGINAL/icons: icon128.png afg Logo.png
+Only in Developer/AFG Browser Extention/icons: icon16.png
+Only in Downloads/Telegram Desktop/AFG Browser Extention ORIGINAL/icons: icon16.png afg Logo.png
+Only in Developer/AFG Browser Extention/icons: icon48.png
+Only in Downloads/Telegram Desktop/AFG Browser Extention ORIGINAL/icons: icon48.png afg Logo.png
+diff -r -x node_modules -x package-lock.json -x links.db Downloads/Telegram Desktop/AFG Browser Extention ORIGINAL/manifest.json Developer/AFG Browser Extention/manifest.json
+6,7c6,15
+<     "permissions": ["activeTab", "storage", "notifications"],
+<     "host_permissions": ["<all_urls>"],
+---
+>     "permissions": [
+>         "activeTab",
+>         "storage",
+>         "notifications",
+>         "tabs"
+>     ],
+>     "host_permissions": [
+>         "http://localhost:3000/*",
+>         "<all_urls>"
+>     ],
+9c17
+<       "service_worker": "background.js"
+---
+>         "service_worker": "background.js"
+12,15c20,23
+<       {
+<         "matches": ["<all_urls>"],
+<         "js": ["content.js"]
+<       }
+---
+>         {
+>             "matches": ["<all_urls>"],
+>             "js": ["content.js"]
+>         }
+18,23c26,31
+<       "default_popup": "popup.html",
+<       "default_icon": {
+<         "16": "icons/icon16.png afg Logo.png",
+<         "48": "icons/icon48.png afg Logo.png",
+<         "128": "icons/icon128.png afg Logo.png"
+<       }
+---
+>         "default_popup": "popup.html",
+>         "default_icon": {
+>             "16": "icons/icon16.png",
+>             "48": "icons/icon48.png",
+>             "128": "icons/icon128.png"
+>         }
+26,28c34,36
+<       "16": "icons/icon16.png afg Logo.png",
+<       "48": "icons/icon48.png afg Logo.png",
+<       "128": "icons/icon128.png afg Logo.png"
+---
+>         "16": "icons/icon16.png",
+>         "48": "icons/icon48.png",
+>         "128": "icons/icon128.png"
+30c38
+<   }
+\ No newline at end of file
+---
+> }
+\ No newline at end of file
+diff -r -x node_modules -x package-lock.json -x links.db Downloads/Telegram Desktop/AFG Browser Extention ORIGINAL/server/server.js Developer/AFG Browser Extention/server/server.js
+14a15
+>   console.log("Request received:", req.query);
+21a23
+>       console.log("Link found:", row.redirectUrl);
+23a26
+>       console.log("No link found");
